@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Igreja Batista Casa Profética | Uma Igreja de Vencedores</title>
+    <meta name="description" content="Portal oficial da Igreja Batista Casa Profética em São Bernardo do Campo. Uma comunidade viva onde a presença de Deus transforma histórias.">
+    <meta name="theme-color" content="#0A0A0C">
+
+    <!-- Compartilhamento (WhatsApp / Facebook) -->
+    <meta property="og:title" content="Igreja Batista Casa Profética">
+    <meta property="og:description" content="Uma comunidade viva onde a presença de Deus transforma histórias. São Bernardo do Campo - SP.">
+    <meta property="og:image" content="assets/img/banner-seja-bem-vindo.jpg">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Montserrat', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            gold: '#F59E0B', goldLight: '#FBBF24', goldDark: '#D97706',
+                            dark: '#0A0A0C', card: '#121216', surface: '#1A1A22'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0A0A0C; color: #F3F4F6; overflow-x: hidden; }
+        body.modal-open { overflow: hidden; }
+        .gold-gradient { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .glass-header { background: rgba(10,10,12,.88); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(245,158,11,.15); }
+        .glass-header.scrolled { box-shadow: 0 10px 30px -10px rgba(0,0,0,.8); background: rgba(10,10,12,.96); }
+        .card-hover { transition: transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s, border-color .3s; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 30px -10px rgba(245,158,11,.18); border-color: rgba(245,158,11,.5); }
+
+        /* Imagem com fallback: se o arquivo não existir, aparece um degradê no lugar */
+        .img-box { background: linear-gradient(135deg, #1A1A22, #291d06); }
+        img.img-erro { opacity: 0; }
+
+        /* Link ativo do menu */
+        .nav-link.active { color: #F59E0B; }
+
+        /* Animação de entrada ao rolar */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* Banner */
+        .banner-slide { transition: opacity .8s ease; }
+        .banner-slide .slide-bg { transition: transform 7s ease; transform: scale(1.08); }
+        .banner-slide.is-active .slide-bg { transform: scale(1); }
+
+        /* Galeria em colunas (masonry) */
+        .masonry { columns: 2; column-gap: 1rem; }
+        @media (min-width: 768px) { .masonry { columns: 3; } }
+        @media (min-width: 1024px) { .masonry { columns: 4; } }
+        .masonry > * { break-inside: avoid; margin-bottom: 1rem; }
+
+        /* Rolagem horizontal dos vídeos */
+        .snap-row { scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .snap-row::-webkit-scrollbar { display: none; }
+        .snap-row > * { scroll-snap-align: start; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0A0A0C; }
+        ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
+
+        @keyframes pulse-live { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.2); } }
+        .live-dot { animation: pulse-live 1.8s infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-gold selection:text-black">
+
+    <!-- Notificações -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[60] flex flex-col gap-3 pointer-events-none" aria-live="polite"></div>
+
+    <!-- ===================== TOPBAR ===================== -->
+    <div class="bg-black/90 border-b border-white/10 text-xs py-2.5 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-6 text-gray-400">
+                <a href="#onde-nos-encontrar" class="hover:text-brand-gold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-brand-gold"></i>
+                    <span>Bairro dos Casa, São Bernardo do Campo - SP</span>
+                </a>
+                <span class="hidden md:inline-block text-white/20">|</span>
+                <a data-link="instagram" href="#" target="_blank" rel="noopener" class="hidden sm:flex hover:text-brand-gold transition items-center gap-1.5">
+                    <i class="fa-brands fa-instagram text-brand-gold"></i>
+                    <span>@ibcasaprofetica.ofc</span>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-4 ml-auto">
+                <div class="hidden lg:flex items-center bg-brand-surface px-3 py-1 rounded-full border border-white/10 gap-2.5">
+                    <i class="fa-solid fa-radio text-brand-gold text-xs"></i>
+                    <span class="text-[11px] font-medium text-gray-300">Rádio Casa Profética</span>
+                    <button id="radio-btn" type="button" class="w-5 h-5 rounded-full bg-brand-gold text-black flex items-center justify-center hover:bg-brand-goldLight transition" aria-label="Ouvir rádio">
+                        <i id="radio-icon" class="fa-solid fa-play text-[9px]"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-3 text-gray-400">
+                    <a data-link="instagram" href="#" target="_blank" rel="noopener" class="hover:text-brand-gold transition text-sm" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a data-link="facebook" href="#" target="_blank" rel="noopener" class="hover:text-brand-gold transition text-sm" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                    <a data-link="youtube" href="#" target="_blank" rel="noopener" class="hover:text-brand-gold transition text-sm" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+
+                <button type="button" data-modal="login" class="text-xs font-semibold bg-white/10 hover:bg-brand-gold hover:text-black text-white px-3 py-1 rounded-full transition flex items-center gap-1.5">
+                    <i class="fa-regular fa-user"></i><span>Entrar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header id="main-header" class="sticky top-0 z-40 glass-header transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="#inicio" class="flex items-center gap-3 group" aria-label="Início">
+                    <div class="logo-slot w-12 h-12 rounded-xl bg-gradient-to-br from-brand-gold/20 to-black border border-brand-gold/50 flex items-center justify-center shadow-lg group-hover:border-brand-gold transition"></div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-brand-gold font-semibold">Igreja Batista</span>
+                        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-white leading-none">CASA PROFÉTICA</span>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex items-center space-x-6 text-sm font-medium text-gray-300" aria-label="Menu principal">
+                    <a href="#inicio" class="nav-link hover:text-brand-gold transition">Início</a>
+                    <a href="#sobre-nos" class="nav-link hover:text-brand-gold transition">Sobre Nós</a>
+                    <a href="#palavras" class="nav-link hover:text-brand-gold transition">Palavras</a>
+                    <a href="#galeria" class="nav-link hover:text-brand-gold transition">Galeria</a>
+                    <a href="#celulas" class="nav-link hover:text-brand-gold transition">Células</a>
+                    <a href="#eventos" class="nav-link hover:text-brand-gold transition">Eventos</a>
+                    <a href="#oracao" class="nav-link hover:text-brand-gold transition">Oração</a>
+                    <a href="#ao-vivo" class="flex items-center gap-2 text-white bg-red-600/20 border border-red-500/40 px-3 py-1.5 rounded-full hover:bg-red-600/30 transition">
+                        <span class="w-2 h-2 rounded-full bg-red-500 live-dot"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Ao Vivo</span>
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <a href="#doacoes" class="gold-gradient text-black font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-lg shadow-brand-gold/20 hover:brightness-110 transition flex items-center gap-2">
+                        <i class="fa-solid fa-heart"></i>
+                        <span class="hidden sm:inline">Dízimos e Ofertas</span><span class="sm:hidden">Ofertar</span>
+                    </a>
+                    <button id="mobile-menu-btn" type="button" class="lg:hidden p-2.5 rounded-xl bg-white/5 text-gray-300 hover:text-white border border-white/10" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+                        <i id="hamburger-icon" class="fa-solid fa-bars text-xl w-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-card border-b border-white/10 px-4 pt-3 pb-6 space-y-1">
+            <a href="#inicio" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Início</a>
+            <a href="#sobre-nos" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Sobre Nós</a>
+            <a href="#ao-vivo" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Cultos e Horários</a>
+            <a href="#palavras" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Palavras & Vídeos</a>
+            <a href="#galeria" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Galeria de Fotos</a>
+            <a href="#celulas" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Células</a>
+            <a href="#eventos" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Agenda de Eventos</a>
+            <a href="#doacoes" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-brand-gold font-bold">Dízimos e Ofertas</a>
+            <a href="#oracao" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Pedidos de Oração</a>
+            <a href="#onde-nos-encontrar" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Onde Nos Encontrar</a>
+        </div>
+    </header>
+
+    <main>
+    <!-- ===================== 1. BANNER (slides vêm de BANNER em config.js) ===================== -->
+    <section id="inicio" class="relative w-full overflow-hidden bg-black" aria-roledescription="carrossel" aria-label="Destaques">
+        <div id="banner-slider" class="relative h-[560px] sm:h-[620px] lg:h-[680px] w-full">
+            <div id="banner-slides"></div>
+
+            <button id="banner-prev" type="button" class="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/50 hover:bg-brand-gold hover:text-black text-white border border-white/15 items-center justify-center transition" aria-label="Slide anterior">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="banner-next" type="button" class="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/50 hover:bg-brand-gold hover:text-black text-white border border-white/15 items-center justify-center transition" aria-label="Próximo slide">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <div id="banner-bullets" class="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 flex space-x-3"></div>
+        </div>
+    </section>
+
+    <!-- ===================== 2. ACESSO RÁPIDO ===================== -->
+    <section class="relative z-20 -mt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold text-xl mb-4"><i class="fa-solid fa-circle-play"></i></div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Cultos Online</h3>
+                    <p class="text-gray-400 text-sm mb-5">Acompanhe nossas transmissões ao vivo e mensagens edificantes no canal.</p>
+                </div>
+                <a href="#ao-vivo" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-goldLight"><span>Assistir Agora</span><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold text-xl mb-4"><i class="fa-solid fa-house-chimney-user"></i></div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Nossas Células</h3>
+                    <p class="text-gray-400 text-sm mb-5">Encontre um pequeno grupo perto de você para crescer em comunhão e fé.</p>
+                </div>
+                <a href="#celulas" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-goldLight"><span>Encontrar Célula</span><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold text-xl mb-4"><i class="fa-solid fa-hands-holding-child"></i></div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Aceitar Jesus</h3>
+                    <p class="text-gray-400 text-sm mb-5">Tomou a decisão mais importante da sua vida? Queremos caminhar com você!</p>
+                </div>
+                <button type="button" data-modal="jesus" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-goldLight text-left"><span>Falar com Equipe</span><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold text-xl mb-4"><i class="fa-brands fa-instagram"></i></div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Instagram Oficial</h3>
+                    <p class="text-gray-400 text-sm mb-5">Fique por dentro dos avisos diários, fotos dos cultos e stories da igreja.</p>
+                </div>
+                <a data-link="instagram" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-gold hover:text-brand-goldLight"><span>@ibcasaprofetica.ofc</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 3. SOBRE NÓS ===================== -->
+    <section id="sobre-nos" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-6 space-y-6 reveal">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-bold uppercase tracking-widest">Quem Somos</div>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-white leading-tight">Igreja Batista <span class="gold-text-gradient">Casa Profética</span></h2>
+                <div class="space-y-4 text-gray-300 leading-relaxed text-base">
+                    <p>Fundada em setembro de 2015 em São Bernardo do Campo, a <strong>Igreja Batista Casa Profética</strong> nasceu com a missão de ser uma casa de adoração, ensino bíblico sólido e manifestação do poder do Espírito Santo.</p>
+                    <p>Nossa paixão é por vidas! Acreditamos em uma igreja acolhedora, relevante e profética, que prepara discípulos vencedores para impactar sua família, sua cidade e as nações através do amor de Jesus Cristo.</p>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-2">
+                    <div class="bg-brand-surface p-4 rounded-xl border border-white/5 text-center">
+                        <span class="block font-display font-black text-2xl text-brand-gold"><span data-count-from="2015"></span>+</span>
+                        <span class="text-xs text-gray-400">Anos de História</span>
+                    </div>
+                    <div class="bg-brand-surface p-4 rounded-xl border border-white/5 text-center">
+                        <span class="block font-display font-black text-2xl text-brand-gold">100%</span>
+                        <span class="text-xs text-gray-400">Cristocêntrica</span>
+                    </div>
+                    <div class="bg-brand-surface p-4 rounded-xl border border-white/5 text-center">
+                        <span class="block font-display font-black text-2xl text-brand-gold">SBC</span>
+                        <span class="text-xs text-gray-400">Bairro dos Casa</span>
+                    </div>
+                </div>
+                <div class="pt-4 flex flex-wrap items-center gap-4">
+                    <span class="text-sm font-semibold text-gray-400">Acompanhe nossas redes:</span>
+                    <div class="flex items-center gap-3">
+                        <a data-link="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 rounded-full bg-brand-surface border border-white/10 flex items-center justify-center text-white hover:bg-brand-gold hover:text-black transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a data-link="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook" class="w-10 h-10 rounded-full bg-brand-surface border border-white/10 flex items-center justify-center text-white hover:bg-brand-gold hover:text-black transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a data-link="youtube" href="#" target="_blank" rel="noopener" aria-label="YouTube" class="w-10 h-10 rounded-full bg-brand-surface border border-white/10 flex items-center justify-center text-white hover:bg-brand-gold hover:text-black transition"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 relative reveal">
+                <div class="absolute -inset-2 bg-gradient-to-r from-brand-gold/30 to-amber-700/20 rounded-3xl blur-xl opacity-70"></div>
+                <div class="relative rounded-2xl overflow-hidden border border-brand-gold/30 shadow-2xl img-box">
+                    <!-- IMAGEM: IMAGENS.sobre (config.js) -->
+                    <img data-img="sobre" alt="" class="w-full h-[440px] lg:h-[520px] object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent flex items-end p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full gold-gradient flex items-center justify-center text-black font-bold text-xl"><i class="fa-solid fa-church"></i></div>
+                            <div>
+                                <h4 class="text-white font-bold">Lugar de Novos Começos</h4>
+                                <p class="text-gray-300 text-xs">Venha viver a experiência da Casa Profética com sua família</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 4. AO VIVO & HORÁRIOS ===================== -->
+    <section id="ao-vivo" class="py-16 bg-brand-card border-y border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 reveal">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-red-400 text-xs font-bold uppercase tracking-widest mb-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 live-dot"></span>Transmissão & Programação Semanal
+                    </div>
+                    <h2 class="font-display font-black text-3xl text-white">CULTOS E HORÁRIOS</h2>
+                </div>
+                <a data-link="youtube" href="#" target="_blank" rel="noopener" class="text-sm font-semibold text-brand-gold hover:underline flex items-center gap-2"><span>Acessar Canal no YouTube</span><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 reveal">
+                    <!-- O vídeo só carrega ao clicar (deixa o site mais rápido) -->
+                    <div id="live-player" class="relative aspect-video rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl"></div>
+                </div>
+
+                <div class="lg:col-span-5 space-y-4 reveal">
+                    <div class="bg-brand-surface p-5 rounded-2xl border border-white/10 hover:border-brand-gold/40 transition flex items-start gap-4">
+                        <div class="bg-brand-gold/15 border border-brand-gold/40 text-brand-gold rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+                            <span class="block text-xs font-bold uppercase">DOM</span><span class="block font-display font-black text-lg">18h00</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-base">Culto de Celebração & Família</h4>
+                            <p class="text-gray-400 text-xs mt-1">Louvor, adoração profética, ministração da Palavra e Espaço Kids.</p>
+                        </div>
+                    </div>
+                    <div class="bg-brand-surface p-5 rounded-2xl border border-white/10 hover:border-brand-gold/40 transition flex items-start gap-4">
+                        <div class="bg-brand-gold/15 border border-brand-gold/40 text-brand-gold rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+                            <span class="block text-xs font-bold uppercase">QUI</span><span class="block font-display font-black text-lg">20h00</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-base">Quinta Profética</h4>
+                            <p class="text-gray-400 text-xs mt-1">Noite de clamor, milagres, libertação e aprofundamento espiritual.</p>
+                        </div>
+                    </div>
+                    <div class="bg-brand-surface p-5 rounded-2xl border border-white/10 hover:border-brand-gold/40 transition flex items-start gap-4">
+                        <div class="bg-brand-gold/15 border border-brand-gold/40 text-brand-gold rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+                            <span class="block text-xs font-bold uppercase">SÁB</span><span class="block font-display font-black text-lg">19h30</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-base">Rede de Jovens & Adolescentes</h4>
+                            <p class="text-gray-400 text-xs mt-1">Uma geração incendiada pela presença de Deus fazendo a diferença.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 5. PALAVRAS ===================== -->
+    <section id="palavras" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4 reveal">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Mensagens Recentes</span>
+                <h2 class="font-display font-black text-3xl text-white mt-1">PALAVRAS QUE TRANSFORMAM</h2>
+            </div>
+            <a data-link="youtube" href="#" target="_blank" rel="noopener" class="text-sm font-semibold text-gray-300 hover:text-brand-gold transition flex items-center gap-2">
+                <span>Ver todas as palavras</span><i class="fa-solid fa-chevron-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <button type="button" data-palavra="principal" class="reveal text-left lg:col-span-8 group relative rounded-2xl overflow-hidden border border-white/10 h-[380px] sm:h-[460px] img-box">
+                <!-- IMAGEM: IMAGENS.palavraPrincipal -->
+                <img data-img="palavraPrincipal" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                <div class="absolute bottom-0 inset-x-0 p-6 sm:p-8">
+                    <span data-txt="selo" class="inline-block px-3 py-1 rounded-md bg-brand-gold text-black font-bold text-xs uppercase mb-3"></span>
+                    <div class="flex items-center gap-3 text-gray-300 text-xs mb-2">
+                        <span class="w-8 h-8 rounded-full bg-brand-gold text-black flex items-center justify-center"><i class="fa-solid fa-play"></i></span>
+                        <span data-txt="data"></span>
+                    </div>
+                    <h3 data-txt="titulo" class="font-display font-bold text-2xl sm:text-3xl text-white group-hover:text-brand-gold transition"></h3>
+                </div>
+            </button>
+
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                <button type="button" data-palavra="lateral1" class="reveal text-left group relative rounded-2xl overflow-hidden border border-white/10 flex-1 min-h-[200px] img-box">
+                    <!-- IMAGEM: IMAGENS.palavra2 -->
+                    <img data-img="palavra2" alt="" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 inset-x-0 p-5">
+                        <div class="flex items-center gap-2 text-brand-gold text-xs mb-1"><i class="fa-solid fa-circle-play"></i><span data-txt="data"></span></div>
+                        <h4 data-txt="titulo" class="font-display font-bold text-lg text-white group-hover:text-brand-gold transition"></h4>
+                    </div>
+                </button>
+                <button type="button" data-palavra="lateral2" class="reveal text-left group relative rounded-2xl overflow-hidden border border-white/10 flex-1 min-h-[200px] img-box">
+                    <!-- IMAGEM: IMAGENS.palavra3 -->
+                    <img data-img="palavra3" alt="" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 inset-x-0 p-5">
+                        <div class="flex items-center gap-2 text-brand-gold text-xs mb-1"><i class="fa-solid fa-circle-play"></i><span data-txt="data"></span></div>
+                        <h4 data-txt="titulo" class="font-display font-bold text-lg text-white group-hover:text-brand-gold transition"></h4>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Vídeos verticais (VIDEOS em config.js) -->
+        <div class="mt-16 reveal">
+            <div class="flex items-end justify-between mb-6 gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Direto do altar</span>
+                    <h3 class="font-display font-black text-2xl text-white mt-1">MINISTRAÇÕES EM VÍDEO</h3>
+                </div>
+                <div class="hidden sm:flex gap-2">
+                    <button type="button" data-scroll="videos-row" data-dir="-1" class="w-10 h-10 rounded-full bg-brand-surface border border-white/10 hover:bg-brand-gold hover:text-black transition" aria-label="Vídeos anteriores"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button type="button" data-scroll="videos-row" data-dir="1" class="w-10 h-10 rounded-full bg-brand-surface border border-white/10 hover:bg-brand-gold hover:text-black transition" aria-label="Próximos vídeos"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div id="videos-row" class="snap-row flex gap-4 overflow-x-auto pb-2"></div>
+        </div>
+    </section>
+
+    <!-- ===================== 6. GALERIA (GALERIA em config.js) ===================== -->
+    <section id="galeria" class="py-20 bg-brand-card border-y border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4 reveal">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Galeria</span>
+                    <h2 class="font-display font-black text-3xl text-white mt-1">MOMENTOS NA CASA</h2>
+                </div>
+                <a data-link="instagram" href="#" target="_blank" rel="noopener" class="text-sm font-semibold text-gray-300 hover:text-brand-gold transition flex items-center gap-2">
+                    <i class="fa-brands fa-instagram text-brand-gold"></i><span>Mais fotos no Instagram</span>
+                </a>
+            </div>
+            <div id="gallery-grid" class="masonry"></div>
+        </div>
+    </section>
+
+    <!-- ===================== 7. CÉLULAS ===================== -->
+    <section id="celulas" class="py-20 relative overflow-hidden border-b border-white/10">
+        <!-- IMAGEM DE FUNDO: IMAGENS.fundoCelulas -->
+        <div data-bg="fundoCelulas" class="absolute inset-0 bg-cover bg-center opacity-15"></div>
+        <div class="absolute inset-0" style="background: radial-gradient(circle at top right, rgba(41,29,6,.9) 0%, rgba(10,10,12,.97) 70%);"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <span class="px-3.5 py-1.5 rounded-full bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-xs font-bold uppercase tracking-widest">Igreja nos Lares</span>
+                <h2 class="font-display font-black text-3xl sm:text-5xl text-white mt-4">ENCONTRE UMA CÉLULA</h2>
+                <p class="text-gray-300 mt-3 text-base">As células são pequenos grupos que se reúnem semanalmente em São Bernardo do Campo para compartilhar a Palavra, orar e viver em verdadeira comunhão.</p>
+            </div>
+
+            <div class="bg-brand-card p-4 sm:p-6 rounded-2xl border border-white/10 max-w-4xl mx-auto mb-10 shadow-xl reveal">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="cell-search" class="block text-xs text-gray-400 mb-1.5 font-medium">Buscar por Bairro ou Nome</label>
+                        <input type="search" id="cell-search" placeholder="Ex: Bairro dos Casa, Demarchi..." class="w-full bg-brand-surface border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+                    </div>
+                    <div>
+                        <label for="cell-network" class="block text-xs text-gray-400 mb-1.5 font-medium">Rede / Público</label>
+                        <select id="cell-network" class="w-full bg-brand-surface border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold"></select>
+                    </div>
+                    <div>
+                        <label for="cell-day" class="block text-xs text-gray-400 mb-1.5 font-medium">Dia da Semana</label>
+                        <select id="cell-day" class="w-full bg-brand-surface border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cells-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- ===================== 8. EVENTOS (EVENTOS em config.js) ===================== -->
+    <section id="eventos" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4 reveal">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Agenda Profética</span>
+                <h2 class="font-display font-black text-3xl text-white mt-1">PRÓXIMOS EVENTOS</h2>
+            </div>
+            <p class="text-gray-400 text-sm max-w-md">Participe dos nossos congressos, encontros, batismos e conferências especiais.</p>
+        </div>
+        <div id="events-grid" class="grid grid-cols-1 md:grid-cols-3 gap-7"></div>
+    </section>
+
+    <!-- ===================== 9. DÍZIMOS E OFERTAS ===================== -->
+    <section id="doacoes" class="py-20 bg-brand-card border-y border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6 reveal">
+                    <span class="px-3.5 py-1.5 rounded-full bg-brand-gold/15 border border-brand-gold/40 text-brand-gold text-xs font-bold uppercase tracking-widest">Generosidade & Semente</span>
+                    <h2 class="font-display font-black text-3xl sm:text-4xl text-white">DÍZIMOS E <span class="gold-text-gradient">OFERTAS</span></h2>
+                    <p class="text-gray-300 leading-relaxed">"Cada um contribua segundo propôs no seu coração; não com tristeza, ou por necessidade; porque Deus ama ao que dá com alegria." <span class="text-brand-gold font-semibold">(2 Coríntios 9:7)</span></p>
+                    <p class="text-gray-400 text-sm leading-relaxed">Através da sua fidelidade nos dízimos e ofertas, a Igreja Batista Casa Profética continua alcançando vidas, mantendo projetos sociais, apoiando missões e transmitindo a Palavra de Deus.</p>
+                    <div class="bg-brand-surface p-5 rounded-2xl border border-white/10 space-y-2">
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="text-xs uppercase tracking-wider text-gray-400">Razão Social</span>
+                            <span class="text-sm font-bold text-white text-right">Igreja Batista Casa Profética</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="text-xs uppercase tracking-wider text-gray-400">CNPJ Oficial</span>
+                            <span data-pix class="text-sm font-mono font-bold text-brand-gold"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 reveal">
+                    <div class="bg-brand-surface border-2 border-brand-gold/40 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-6 gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl gold-gradient flex items-center justify-center text-black text-2xl font-bold"><i class="fa-brands fa-pix"></i></div>
+                                <div>
+                                    <h3 class="font-display font-bold text-xl text-white">Contribua via PIX</h3>
+                                    <p class="text-xs text-gray-400">Rápido, seguro e direto para a conta da Igreja</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-brand-gold/20 text-brand-gold px-3 py-1 rounded-full font-bold shrink-0">Chave CNPJ</span>
+                        </div>
+                        <div class="bg-black/60 border border-white/15 rounded-2xl p-4 mb-6">
+                            <span class="block text-[11px] uppercase tracking-wider text-gray-400 mb-1">Chave PIX (CNPJ):</span>
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <code data-pix class="text-base sm:text-lg font-mono font-bold text-white select-all"></code>
+                                <button id="copy-pix" type="button" class="gold-gradient text-black font-bold text-xs px-4 py-2.5 rounded-xl hover:brightness-110 transition flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-regular fa-copy"></i><span>Copiar Chave</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400 pt-2 border-t border-white/10">
+                            <span>Favorecido: <strong>Igreja Batista Casa Profética</strong></span>
+                            <button id="copy-pix-raw" type="button" class="text-brand-gold hover:underline">Copiar apenas números</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 10. NOTÍCIAS (NOTICIAS em config.js) ===================== -->
+    <section id="noticias" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4 reveal">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Blog & Devocionais</span>
+                <h2 class="font-display font-black text-3xl text-white mt-1">ÚLTIMAS NOTÍCIAS</h2>
+            </div>
+            <p class="text-gray-400 text-sm">Acompanhe artigos pastorais, testemunhos e novidades da nossa comunidade.</p>
+        </div>
+        <div id="news-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </section>
+
+    <!-- ===================== 11. ORAÇÃO & LOCALIZAÇÃO ===================== -->
+    <section id="oracao" class="py-20 bg-brand-card border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-6 bg-brand-surface p-6 sm:p-8 rounded-3xl border border-white/10 reveal">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Intercessão</span>
+                    <h3 class="font-display font-black text-2xl sm:text-3xl text-white mt-1 mb-2">PEDIDO DE ORAÇÃO</h3>
+                    <p class="text-gray-400 text-sm mb-6">Nossa equipe de intercessores estará orando pela sua causa durante toda a semana.</p>
+
+                    <form id="prayer-form" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="pr-nome" class="block text-xs text-gray-400 mb-1">Seu Nome *</label>
+                                <input id="pr-nome" name="nome" type="text" required placeholder="Digite seu nome" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+                            </div>
+                            <div>
+                                <label for="pr-tel" class="block text-xs text-gray-400 mb-1">WhatsApp / Telefone</label>
+                                <input id="pr-tel" name="telefone" type="tel" inputmode="tel" placeholder="(11) 90000-0000" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="pr-motivo" class="block text-xs text-gray-400 mb-1">Motivo de Oração *</label>
+                            <textarea id="pr-motivo" name="motivo" rows="4" required placeholder="Escreva aqui seu pedido de oração ou testemunho..." class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-gold"></textarea>
+                        </div>
+                        <button type="submit" class="w-full gold-gradient text-black font-bold py-3.5 rounded-xl shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hands-praying"></i><span>Enviar Pedido para Intercessão</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="onde-nos-encontrar" class="lg:col-span-6 flex flex-col justify-between space-y-6 reveal">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Localização</span>
+                        <h3 class="font-display font-black text-2xl sm:text-3xl text-white mt-1 mb-3">ONDE NOS ENCONTRAR</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-6">Estamos de braços abertos esperando por você e sua família em São Bernardo do Campo.</p>
+                        <div class="bg-brand-surface p-4 rounded-2xl border border-white/10 flex items-start gap-3.5">
+                            <i class="fa-solid fa-location-dot text-brand-gold text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-white text-sm">Sede Igreja Batista Casa Profética</h4>
+                                <p class="text-gray-400 text-xs mt-0.5">Estrada dos Casa, 3362 / R. das Seringueiras, 3 - Bairro dos Casa, São Bernardo do Campo - SP, CEP 09840-000</p>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Igreja+Batista+Casa+Prof%C3%A9tica+Bairro+dos+Casa+S%C3%A3o+Bernardo+do+Campo" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 mt-2 text-xs font-bold text-brand-gold hover:underline">
+                                    <i class="fa-solid fa-route"></i> Como chegar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map-box" class="rounded-2xl overflow-hidden border border-white/15 h-64 w-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="bg-black border-t border-white/10 pt-16 pb-10 text-sm text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="logo-slot w-10 h-10 rounded-xl bg-brand-gold/20 border border-brand-gold flex items-center justify-center"></div>
+                        <div>
+                            <span class="block text-[10px] uppercase tracking-widest text-brand-gold font-bold">Igreja Batista</span>
+                            <span class="font-display font-black text-lg text-white">CASA PROFÉTICA</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed max-w-sm">Uma comunidade viva onde a presença de Deus transforma histórias. Aqui há lugar para você — venha experimentar o profético!</p>
+                    <p class="text-xs text-gray-500">CNPJ: <span data-pix></span> • São Bernardo do Campo / SP</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Navegação</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#inicio" class="hover:text-brand-gold transition">Início</a></li>
+                        <li><a href="#sobre-nos" class="hover:text-brand-gold transition">Sobre Nós</a></li>
+                        <li><a href="#palavras" class="hover:text-brand-gold transition">Palavras & Vídeos</a></li>
+                        <li><a href="#galeria" class="hover:text-brand-gold transition">Galeria</a></li>
+                        <li><a href="#noticias" class="hover:text-brand-gold transition">Notícias</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Comunidade</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#celulas" class="hover:text-brand-gold transition">Buscador de Células</a></li>
+                        <li><a href="#eventos" class="hover:text-brand-gold transition">Agenda de Eventos</a></li>
+                        <li><a href="#doacoes" class="hover:text-brand-gold transition">Dízimos e Ofertas</a></li>
+                        <li><a href="#oracao" class="hover:text-brand-gold transition">Pedidos de Oração</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Conecte-se</h4>
+                    <a data-link="instagram" href="#" target="_blank" rel="noopener" class="flex items-center gap-2.5 text-xs hover:text-brand-gold transition"><i class="fa-brands fa-instagram text-brand-gold text-base"></i><span>@ibcasaprofetica.ofc</span></a>
+                    <a data-link="facebook" href="#" target="_blank" rel="noopener" class="flex items-center gap-2.5 text-xs hover:text-brand-gold transition"><i class="fa-brands fa-facebook text-brand-gold text-base"></i><span>/CasaProfeticaIgrejaDeVencedores</span></a>
+                    <a data-link="youtube" href="#" target="_blank" rel="noopener" class="flex items-center gap-2.5 text-xs hover:text-brand-gold transition"><i class="fa-brands fa-youtube text-brand-gold text-base"></i><span>YouTube Casa Profética</span></a>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <p>© <span id="year"></span> Igreja Batista Casa Profética. Todos os direitos reservados.</p>
+                <div class="flex space-x-4">
+                    <button type="button" data-toast="Política de Privacidade e Cookies ativa." class="hover:text-gray-300">Política de Privacidade</button>
+                    <span>•</span>
+                    <button type="button" data-modal="login" class="hover:text-gray-300">Painel do Membro</button>
+                    <button type="button" id="admin-btn" class="hidden text-brand-gold hover:underline"><i class="fa-solid fa-database mr-1"></i>Painel de Gestão</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botões flutuantes -->
+    <a id="whatsapp-float" href="#" target="_blank" rel="noopener" class="hidden fixed bottom-6 left-6 z-40 w-14 h-14 rounded-full bg-[#25D366] text-white text-3xl shadow-2xl items-center justify-center hover:scale-110 transition" aria-label="Fale conosco no WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+    <button id="back-to-top" type="button" class="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-brand-surface border border-brand-gold/40 text-brand-gold shadow-xl opacity-0 pointer-events-none transition hover:bg-brand-gold hover:text-black" aria-label="Voltar ao topo"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- MODAL DE MÍDIA (YouTube, vídeo local e fotos da galeria) -->
+    <div id="media-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="media-modal-title">
+        <div class="relative w-full max-w-5xl flex flex-col items-center">
+            <div class="w-full flex items-center justify-between mb-3 gap-4">
+                <h4 id="media-modal-title" class="font-bold text-white text-sm sm:text-base truncate"></h4>
+                <button type="button" data-close class="w-10 h-10 shrink-0 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black text-white text-lg transition" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="media-modal-body" class="w-full flex items-center justify-center"></div>
+            <button type="button" id="media-prev" class="hidden absolute left-0 sm:-left-14 top-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-brand-gold hover:text-black text-white border border-white/15 transition" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" id="media-next" class="hidden absolute right-0 sm:-right-14 top-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-brand-gold hover:text-black text-white border border-white/15 transition" aria-label="Próxima"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- MODAL GENÉRICO (Login / Aceitar Jesus / Inscrição / Leitura) -->
+    <div id="generic-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div id="generic-modal-content" class="bg-brand-card border border-brand-gold/30 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto"></div>
+    </div>
+
+    <audio id="radio-audio" preload="none"></audio>
+
+    <!-- 1º as configurações (imagens, textos), depois a lógica -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
