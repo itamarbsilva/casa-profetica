@@ -99,6 +99,8 @@
       if (db && u && typeof u.canEdit === 'function' && u.canEdit()) $('#admin-btn').classList.remove('hidden');
     }).catch(() => {});
   }
+  // Aceita a URL com ou sem "/rest/v1/" no final
+  if (SITE.supabaseUrl) SITE.supabaseUrl = SITE.supabaseUrl.replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
   const temSupabase = () => !!(SITE.supabaseUrl && SITE.supabaseKey);
   if (temSupabase()) $('#admin-btn').classList.remove('hidden');
 
