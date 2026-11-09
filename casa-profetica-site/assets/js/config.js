@@ -17,6 +17,11 @@
      - Pode usar links da internet (https://...) no lugar de arquivos.
    ===================================================================== */
 
+window.SUPABASE_CONFIG = {
+    supabaseUrl: 'https://kijpevnexjanyvigcpgx.supabase.co/rest/v1/',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpanBldm5leGphbnl2aWdjcGd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNDE4NzUsImV4cCI6MjEwOTgxNzg3NX0.QAECrmIPnA8j3jB5Knve9XgZyi0GH_S1VkNqLH3f55k'
+};
+
 const SITE = {
   /* ---------- DADOS GERAIS ---------- */
   nome: 'Igreja Batista Casa Profética',
