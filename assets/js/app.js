@@ -514,13 +514,16 @@
   gModal.addEventListener('click', (e) => { if (e.target === gModal) closeGeneric(); });
 
   const MODAIS = {
-    login: () => openGeneric(`
-      ${header('fa-user-lock', 'Área do Membro', 'Acesse seu perfil, inscrições e conteúdos exclusivos')}
-      <form class="space-y-4">
-        <div><label class="block text-xs text-gray-400 mb-1">E-mail</label><input name="email" type="email" required placeholder="seu@email.com" class="${inputCls}"></div>
-        <div><label class="block text-xs text-gray-400 mb-1">Senha</label><input name="senha" type="password" required placeholder="••••••••" class="${inputCls}"></div>
-        <button type="submit" class="w-full gold-gradient text-black font-bold py-3 rounded-xl">Entrar no Portal</button>
-      </form>`, () => showToast('Área do membro em breve! Fique de olho nas novidades.', 'fa-circle-info')),
+    // "Entrar" = login da equipe (Supabase) → abre o Painel de Gestão
+    login: () => {
+      if (temSupabase() || BANCO.db) return abrirPainel();
+      if (foraDoOficial) {
+        return openGeneric(`
+          ${header('fa-user-lock', 'Área da Equipe', 'O login funciona no site oficial da igreja.')}
+          <a href="${esc(SITE.siteOficial)}" target="_blank" rel="noopener" class="w-full gold-gradient text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i>Abrir site oficial</a>`);
+      }
+      showToast('Login indisponível: configure o Supabase em config.js.', 'fa-circle-info');
+    },
 
     jesus: () => openGeneric(`
       ${header('fa-heart', 'Quero Aceitar Jesus!', 'O céu está em festa pela sua decisão! Preencha abaixo para nossa equipe acolher você.')}
@@ -591,7 +594,7 @@
     // Supabase sem login → tela de login
     if (!BANCO.db && temSupabase() && !sessionStorage.getItem('sb_token')) {
       openGeneric(`
-        ${header('fa-database', 'Painel de Gestão', 'Entre com o e-mail e senha cadastrados no Supabase.')}
+        ${header('fa-user-lock', 'Área da Equipe', 'Entre com o e-mail e a senha cadastrados para a equipe.')}
         <form class="space-y-4">
           <input name="email" type="email" required placeholder="E-mail" class="${inputCls}" aria-label="E-mail">
           <input name="senha" type="password" required placeholder="Senha" class="${inputCls}" aria-label="Senha">
@@ -600,12 +603,14 @@
           const r = await fetch(`${SITE.supabaseUrl}/auth/v1/token?grant_type=password`, { method: 'POST', headers: { apikey: SITE.supabaseKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: d.email, password: d.senha }) });
           const j = await r.json().catch(() => ({}));
           if (j.access_token) { sessionStorage.setItem('sb_token', j.access_token); setTimeout(abrirPainel, 50); }
-          else showToast('E-mail ou senha incorretos.', 'fa-circle-exclamation');
+          else showToast(j.error_code === 'email_not_confirmed' ? 'Confirme seu e-mail antes de entrar.' : 'E-mail ou senha incorretos.', 'fa-circle-exclamation');
         });
       return;
     }
-    openGeneric(`<h3 class="font-display font-bold text-xl text-white mb-1 pr-8">Painel de Gestão</h3><p class="text-xs text-gray-400 mb-5">Tudo o que chegou pelos formulários do site.</p><div id="painel-corpo" class="text-gray-400 text-sm">Carregando...</div>`);
+    openGeneric(`<h3 class="font-display font-bold text-xl text-white mb-1 pr-8">Painel de Gestão</h3>${temSupabase() && !BANCO.db ? '<button type="button" id="sair-painel" class="text-xs text-gray-400 hover:text-brand-gold mb-2"><i class="fa-solid fa-right-from-bracket mr-1"></i>Sair</button>' : ''}<p class="text-xs text-gray-400 mb-5">Tudo o que chegou pelos formulários do site.</p><div id="painel-corpo" class="text-gray-400 text-sm">Carregando...</div>`);
     gContent.classList.replace('max-w-md', 'max-w-2xl');
+    const sair = $('#sair-painel');
+    if (sair) sair.addEventListener('click', () => { sessionStorage.removeItem('sb_token'); closeGeneric(); showToast('Você saiu da Área da Equipe.'); });
     const timer = setTimeout(() => { const c = $('#painel-corpo'); if (c && c.textContent === 'Carregando...') c.textContent = 'O banco não respondeu. Tente novamente em instantes.'; }, 10000);
     try {
       const lista = await carregarEnvios();
