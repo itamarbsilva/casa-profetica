@@ -142,3 +142,10 @@ grant select, insert, delete on public.avisos to authenticated;
 insert into public.perfis (id, email, nome)
 select id, email, coalesce(raw_user_meta_data->>'nome', split_part(email, '@', 1)) from auth.users
 on conflict (id) do nothing;
+
+-- ---------- Primeiro ADMINISTRADOR ----------
+update public.perfis set papel = 'admin', aprovado = true
+ where email = 'itamarbsilva1983@gmail.com';
+
+-- Conferência: deve aparecer o seu e-mail com papel admin e aprovado = true
+select email, papel, aprovado from public.perfis;
