@@ -33,8 +33,20 @@ const SITE = {
   // com a mensagem pronta. Se vazio, os formulários só mostram confirmação.
   whatsapp: '',
 
-  // Link de streaming da rádio (mp3/aac). Vazio = botão apenas demonstrativo.
+  // Link direto de streaming da rádio (mp3/aac), se o seu provedor fornecer.
   radioStream: '',
+
+  /* ---------- RÁDIO CASTER.FM (plano gratuito) ----------
+     No painel do Caster.fm (cloud.caster.fm), copie:
+       publicToken → "Public Token" (página API Token)
+       channelId   → ID do canal da sua rádio (opcional; vazio = player com todos os canais)
+     Com o publicToken preenchido, o botão da rádio abre o player do Caster.fm. */
+  radioCaster: {
+    publicToken: '',
+    channelId: '',
+    tema: 'dark',      // 'dark' ou 'light'
+    cor: 'F59E0B',     // cor do player (dourado da igreja), sem o #
+  },
 
   /* ---------- LOGO ----------
      Deixe vazio ('') para usar o logo desenhado em SVG (casa + cruz).

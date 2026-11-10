@@ -92,6 +92,8 @@
 
         @keyframes pulse-live { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.2); } }
         .live-dot { animation: pulse-live 1.8s infinite; }
+        /* Links obrigatórios do player Caster.fm: ficam no código, escondidos enquanto o player carrega */
+        .cstrEmbed[data-rendered="false"] > a { position: absolute; left: -9999px; }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -190,6 +192,7 @@
             <a href="#doacoes" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-brand-gold font-bold">Dízimos e Ofertas</a>
             <a href="#oracao" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Pedidos de Oração</a>
             <a href="#onde-nos-encontrar" class="block px-4 py-2.5 rounded-lg hover:bg-white/5 text-gray-200 font-medium">Onde Nos Encontrar</a>
+            <button type="button" data-radio-mobile class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-white/5 text-brand-gold font-bold"><i class="fa-solid fa-radio mr-2"></i>Ouvir a Rádio Casa Profética</button>
         </div>
     </header>
 

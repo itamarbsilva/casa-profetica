@@ -693,7 +693,39 @@
   ------------------------------------------------------------------ */
   const audio = $('#radio-audio');
   let radioOn = false;
+  const caster = SITE.radioCaster || {};
+
+  // Player flutuante do Caster.fm (o plano gratuito só permite o player deles, sem link direto)
+  function abrirRadioCaster() {
+    let box = $('#radio-flutuante');
+    if (box) { box.classList.toggle('hidden'); return; }
+    box = document.createElement('div');
+    box.id = 'radio-flutuante';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-label', 'Rádio Casa Profética');
+    box.className = 'fixed z-50 bottom-24 left-4 right-4 sm:right-auto sm:w-[380px] bg-brand-card border border-brand-gold/40 rounded-2xl shadow-2xl p-3';
+    box.innerHTML = `
+      <div class="flex items-center justify-between mb-2 px-1">
+        <span class="text-sm font-bold text-white"><i class="fa-solid fa-radio text-brand-gold mr-1.5"></i>Rádio Casa Profética</span>
+        <button type="button" id="radio-fechar" class="w-8 h-8 rounded-full hover:bg-white/10 text-gray-300" aria-label="Fechar rádio"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div data-type="streamPlayer" data-publicToken="${esc(caster.publicToken)}" data-theme="${esc(caster.tema || 'dark')}" data-color="${esc(caster.cor || 'F59E0B')}"
+        ${caster.channelId ? `data-channelId="${esc(caster.channelId)}"` : ''} data-rendered="false" class="cstrEmbed">
+        <a href="https://www.caster.fm">Shoutcast Hosting</a> <a href="https://www.caster.fm">Stream Hosting</a> <a href="https://www.caster.fm">Radio Server Hosting</a>
+      </div>
+      <p class="text-[10px] text-gray-500 mt-2 px-1">Se a rádio estiver fora do ar, ela volta durante os cultos e programações ao vivo.</p>`;
+    document.body.appendChild(box);
+    $('#radio-fechar', box).addEventListener('click', () => box.classList.add('hidden'));
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.cloud.caster.fm/widgets/embed.js';
+    sc.async = true;
+    sc.onerror = () => showToast('Não foi possível carregar o player da rádio.', 'fa-circle-exclamation');
+    document.body.appendChild(sc);
+  }
+
+  $$('[data-radio-mobile]').forEach((b) => b.addEventListener('click', () => { toggleMobileMenu(false); $('#radio-btn').click(); }));
   $('#radio-btn').addEventListener('click', async () => {
+    if (caster.publicToken) return abrirRadioCaster();
     radioOn = !radioOn;
     $('#radio-icon').className = `fa-solid ${radioOn ? 'fa-pause' : 'fa-play'} text-[9px]`;
     if (SITE.radioStream) {
