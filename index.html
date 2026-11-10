@@ -163,7 +163,7 @@
                     <a href="#celulas" class="nav-link hover:text-brand-gold transition">Células</a>
                     <a href="#eventos" class="nav-link hover:text-brand-gold transition">Eventos</a>
                     <a href="#oracao" class="nav-link hover:text-brand-gold transition">Oração</a>
-                    <a href="#ao-vivo" class="flex items-center gap-2 text-white bg-red-600/20 border border-red-500/40 px-3 py-1.5 rounded-full hover:bg-red-600/30 transition">
+                    <a href="#ao-vivo" data-aovivo class="flex items-center gap-2 text-white bg-red-600/20 border border-red-500/40 px-3 py-1.5 rounded-full hover:bg-red-600/30 transition">
                         <span class="w-2 h-2 rounded-full bg-red-500 live-dot"></span>
                         <span class="text-xs font-bold uppercase tracking-wider">Ao Vivo</span>
                     </a>
@@ -215,8 +215,8 @@
 
     <!-- ===================== 2. ACESSO RÁPIDO ===================== -->
     <section class="relative z-20 -mt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
+        <div id="acesso-rapido" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div data-aovivo class="reveal bg-brand-card border border-white/10 rounded-2xl p-6 card-hover flex flex-col justify-between">
                 <div>
                     <div class="w-12 h-12 rounded-xl bg-brand-gold/15 border border-brand-gold/30 flex items-center justify-center text-brand-gold text-xl mb-4"><i class="fa-solid fa-circle-play"></i></div>
                     <h3 class="font-display font-bold text-lg text-white mb-2">Cultos Online</h3>
@@ -309,21 +309,22 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 reveal">
                 <div>
-                    <div class="inline-flex items-center gap-2 text-red-400 text-xs font-bold uppercase tracking-widest mb-2">
+                    <div data-aovivo class="inline-flex items-center gap-2 text-red-400 text-xs font-bold uppercase tracking-widest mb-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-red-500 live-dot"></span>Transmissão & Programação Semanal
                     </div>
+                    <div data-sem-aovivo class="hidden text-brand-gold text-xs font-bold uppercase tracking-widest mb-2"><i class="fa-regular fa-calendar mr-1.5"></i>Programação Semanal</div>
                     <h2 class="font-display font-black text-3xl text-white">CULTOS E HORÁRIOS</h2>
                 </div>
                 <a data-link="youtube" href="#" target="_blank" rel="noopener" class="text-sm font-semibold text-brand-gold hover:underline flex items-center gap-2"><span>Acessar Canal no YouTube</span><i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-7 reveal">
+                <div data-aovivo class="lg:col-span-7 reveal">
                     <!-- O vídeo só carrega ao clicar (deixa o site mais rápido) -->
                     <div id="live-player" class="relative aspect-video rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl"></div>
                 </div>
 
-                <div class="lg:col-span-5 space-y-4 reveal">
+                <div id="horarios-lista" class="lg:col-span-5 space-y-4 reveal">
                     <div class="bg-brand-surface p-5 rounded-2xl border border-white/10 hover:border-brand-gold/40 transition flex items-start gap-4">
                         <div class="bg-brand-gold/15 border border-brand-gold/40 text-brand-gold rounded-xl px-3.5 py-2 text-center min-w-[70px]">
                             <span class="block text-xs font-bold uppercase">DOM</span><span class="block font-display font-black text-lg">18h00</span>

@@ -54,6 +54,22 @@
   $$('[data-count-from]').forEach((el) => { el.textContent = new Date().getFullYear() - Number(el.dataset.countFrom); });
 
   /* ------------------------------------------------------------------
+     CULTO AO VIVO desativado → esconde player e selos, mantém os horários
+  ------------------------------------------------------------------ */
+  const aoVivoAtivo = SITE.cultoAoVivo !== false;
+  if (!aoVivoAtivo) {
+    $$('[data-aovivo]').forEach((el) => el.remove());
+    $$('[data-sem-aovivo]').forEach((el) => el.classList.remove('hidden'));
+    const grade = $('#acesso-rapido');
+    if (grade) grade.classList.replace('lg:grid-cols-4', 'lg:grid-cols-3');
+    const lista = $('#horarios-lista');
+    if (lista) {
+      lista.classList.remove('lg:col-span-5', 'space-y-4');
+      lista.classList.add('lg:col-span-12', 'grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-4');
+    }
+  }
+
+  /* ------------------------------------------------------------------
      IMAGENS FIXAS (data-img / data-bg)
   ------------------------------------------------------------------ */
   $$('[data-img]').forEach((img) => {
@@ -168,7 +184,8 @@
   ------------------------------------------------------------------ */
   const slidesBox = $('#banner-slides');
   const bulletsBox = $('#banner-bullets');
-  const botoesHTML = (s) => (s.botoes || []).map((b) => {
+  const botoesHTML = (s) => (s.botoes || []).map((b0) => {
+    const b = (!aoVivoAtivo && b0.link === '#ao-vivo') ? { ...b0, texto: 'Ver Horários dos Cultos', icone: 'fa-clock' } : b0;
     const ext = /^https?:/.test(b.link);
     const icon = b.icone ? `<i class="${b.icone.includes('fa-brands') ? esc(b.icone) : 'fa-solid ' + esc(b.icone)} ${b.principal ? '' : 'text-brand-gold'}"></i>` : '';
     const cls = b.principal
@@ -321,7 +338,7 @@
   /* ------------------------------------------------------------------
      AO VIVO — player carrega só ao clicar (site mais leve)
   ------------------------------------------------------------------ */
-  const live = $('#live-player');
+  const live = $('#live-player') || document.createElement('div');
   const ytId = (PALAVRAS.aoVivo.match(/embed\/([^?&]+)/) || [])[1];
   if (SITE.permitirIncorporar === false) {
     live.innerHTML = `

@@ -33,6 +33,10 @@ const SITE = {
   // com a mensagem pronta. Se vazio, os formulários só mostram confirmação.
   whatsapp: '',
 
+  // Transmissão ao vivo dos cultos (player do YouTube, selo "Ao Vivo" no menu e card "Cultos Online").
+  // false = desativada (os horários dos cultos continuam aparecendo) | true = ativada
+  cultoAoVivo: false,
+
   // Link direto de streaming da rádio (mp3/aac), se o seu provedor fornecer.
   radioStream: '',
 
