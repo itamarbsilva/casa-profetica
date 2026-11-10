@@ -114,7 +114,6 @@
   // Aceita a URL com ou sem "/rest/v1/" no final
   if (SITE.supabaseUrl) SITE.supabaseUrl = SITE.supabaseUrl.replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
   const temSupabase = () => !!(SITE.supabaseUrl && SITE.supabaseKey);
-  if (temSupabase()) $('#admin-btn').classList.remove('hidden');
 
   async function salvarRegistro(tipo, dados) {
     const registro = { tipo, ...dados, em: new Date().toISOString() };
@@ -496,7 +495,7 @@
     </div>`;
 
   function openGeneric(html, onSubmit) {
-    gContent.classList.replace('max-w-2xl', 'max-w-md');
+    gContent.classList.remove('max-w-2xl', 'max-w-3xl'); gContent.classList.add('max-w-md');
     gContent.innerHTML = closeBtn + html;
     $('[data-close]', gContent).addEventListener('click', closeGeneric);
     $$('[data-close-btn]', gContent).forEach((b) => b.addEventListener('click', closeGeneric));
@@ -516,7 +515,8 @@
   const MODAIS = {
     // "Entrar" = login da equipe (Supabase) → abre o Painel de Gestão
     login: () => {
-      if (temSupabase() || BANCO.db) return abrirPainel();
+      if (window.Membros) return window.Membros.abrir();
+      if (BANCO.db) return abrirPainel();
       if (foraDoOficial) {
         return openGeneric(`
           ${header('fa-user-lock', 'Área da Equipe', 'O login funciona no site oficial da igreja.')}
@@ -621,7 +621,7 @@
       pintar('todos');
     } catch (e) { clearTimeout(timer); $('#painel-corpo').textContent = 'Não foi possível carregar os dados.'; }
   }
-  $('#admin-btn').addEventListener('click', abrirPainel);
+  $('#admin-btn').addEventListener('click', () => (window.Membros ? window.Membros.abrir('envios') : abrirPainel()));
 
   function openArticleModal(n) {
     openGeneric(`
@@ -737,4 +737,6 @@
   } else {
     $$('.reveal').forEach((el) => el.classList.add('visible'));
   }
+  // Utilitários compartilhados com a Área de Membros (membros.js)
+  window.CP = { esc, showToast, openGeneric, closeGeneric, header, inputCls, gContent, TIPOS };
 })();
