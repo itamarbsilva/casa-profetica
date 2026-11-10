@@ -25,6 +25,9 @@ const SITE = {
   youtube: 'https://www.youtube.com/results?search_query=Igreja+Batista+Casa+Prof%C3%A9tica',
   pix: '26.226.830/0001-25',
 
+  // Endereço oficial do site (usado nas cópias do site, como a página na Claude, para levar o visitante até aqui)
+  siteOficial: 'https://casa-profetica-rust.vercel.app/',
+
   // WhatsApp da secretaria só com números (ex.: '5511999998888').
   // Se preenchido, aparece o botão flutuante e os formulários abrem o WhatsApp
   // com a mensagem pronta. Se vazio, os formulários só mostram confirmação.

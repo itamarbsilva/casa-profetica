@@ -34,6 +34,18 @@
   });
 
   /* ------------------------------------------------------------------
+     CÓPIA DO SITE (ex.: página na Claude) → faixa levando ao site oficial
+  ------------------------------------------------------------------ */
+  let foraDoOficial = false;
+  try { foraDoOficial = !!SITE.siteOficial && new URL(SITE.siteOficial).host !== location.host && SITE.permitirIncorporar === false; } catch (_) {}
+  if (foraDoOficial) {
+    const faixa = document.createElement('div');
+    faixa.className = 'gold-gradient text-black text-xs sm:text-sm font-semibold px-4 py-2 text-center';
+    faixa.innerHTML = `<i class="fa-solid fa-globe mr-1.5"></i>Site oficial da igreja: <a href="${SITE.siteOficial}" target="_blank" rel="noopener" class="underline font-bold">${SITE.siteOficial.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>`;
+    document.body.prepend(faixa);
+  }
+
+  /* ------------------------------------------------------------------
      LINKS, PIX E TEXTOS GLOBAIS
   ------------------------------------------------------------------ */
   $$('[data-link]').forEach((a) => { const url = SITE[a.dataset.link]; if (url) a.href = url; });
@@ -139,6 +151,12 @@
         ${header('fa-brands fa-whatsapp', 'Quase lá!', 'Toque no botão para enviar sua mensagem pelo WhatsApp da igreja.')}
         <a href="${esc(waLink(textoWhats))}" target="_blank" rel="noopener" class="w-full bg-[#25D366] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-xl"></i>Enviar pelo WhatsApp</a>`);
       return true;
+    }
+    if (foraDoOficial) {
+      openGeneric(`
+        ${header('fa-globe', 'Envie pelo site oficial', 'Por aqui não conseguimos registrar seu envio. No site oficial da igreja o formulário funciona normalmente.')}
+        <a href="${esc(SITE.siteOficial)}#oracao" target="_blank" rel="noopener" class="w-full gold-gradient text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i>Abrir site oficial</a>`);
+      return false;
     }
     openGeneric(`
       ${header('fa-circle-info', 'Envio indisponível no momento', 'Ainda não conseguimos registrar pelo site. Fale com a gente pelo Instagram — respondemos rapidinho!')}

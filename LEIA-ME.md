@@ -86,7 +86,7 @@ pronta. Sem número, os formulários só mostram a confirmação na tela.
 1. No GitHub, crie um repositório público chamado `casa-profetica` (vazio).
 2. Envie todos os arquivos desta pasta (botão **Add file → Upload files**, arraste tudo).
 3. Em **Settings → Pages**, escolha **Branch: main / (root)** e salve.
-4. Em 1–2 minutos o site fica em `https://SEU-USUARIO.github.io/casa-profetica/`.
+4. Em 1–2 minutos o site fica em `https://SEU-USUARIO.github.io/casa-profetica/ (ou na Vercel: https://casa-profetica-rust.vercel.app/)`.
 
 ### 3. Painel de gestão
 Com o Supabase configurado, aparece **Painel de Gestão** no rodapé do site. Entre com o login
