@@ -113,7 +113,7 @@ const BANNER = [
     imagem: 'assets/img/culto-em-pe.jpg', foco: '50% 45%',
     selo: 'Cultos Presenciais & Online', icone: 'fa-calendar-check',
     titulo: 'DOMINGO DA', destaque: 'FAMÍLIA',
-    texto: 'Participe das nossas celebrações todos os domingos e quintas-feiras. Um ambiente de adoração extravagante e palavra revelada para a sua vida.',
+    texto: 'Participe das nossas celebrações todos os domingos e quartas-feiras. Um ambiente de adoração extravagante e palavra revelada para a sua vida.',
     botoes: [
       { texto: 'Assistir Culto Online', link: '#ao-vivo', icone: 'fa-play', principal: true },
       { texto: 'Ver Programação', link: '#eventos' },
