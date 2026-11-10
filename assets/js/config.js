@@ -26,7 +26,7 @@ const SITE = {
   pix: '26.226.830/0001-25',
 
   // Endereço oficial do site (usado nas cópias do site, como a página na Claude, para levar o visitante até aqui)
-  siteOficial: 'https://casa-profetica-rust.vercel.app/',
+  siteOficial: 'https://www.ibcasaprofetica.com.br/',
 
   // WhatsApp da secretaria só com números (ex.: '5511999998888').
   // Se preenchido, aparece o botão flutuante e os formulários abrem o WhatsApp
